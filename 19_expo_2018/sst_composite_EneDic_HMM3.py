@@ -109,7 +109,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 
 "Si no se tiene buen computador, léase dictionario con los ciclos que ya se han calculado anteriormente"
 
-a = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/19_expo_2018/ciclo_diurno_anual_sst_025_6h.bin', 'rb')
+a = open('/home/yordan/Escritorio/ciclo_diurno_anual_sst_025_6h.bin', 'rb')
 
 CICLO_SST = pickle.load(a)
 
@@ -117,7 +117,7 @@ CICLO_SST = pickle.load(a)
 "################################################################################################################"
 
 "Leyendo datos"
-file    = nc.Dataset('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/SST_EOFs.nc')
+file    = nc.Dataset('/home/yordan/TESIS_MAESTRIA/DATOS/SST_EOFs.nc')
 lat     = file.variables['latitude'][:]
 lon     = file.variables['longitude'][:] - 360
 tempo   = file.variables['time'][:]
@@ -126,15 +126,15 @@ DATES   = [CDFtime.num2date(x) for x in tempo]
 DATES   = pd.DatetimeIndex(DATES)
 
 "Fechas"
-archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
+archivo = nc.Dataset('/home/yordan/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
 time    = archivo['time'][:]
 cdftime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 fechas  = [cdftime.num2date(x) for x in time]
 fechas  = pd.DatetimeIndex(fechas)
 
 "Chorro y rezago"
-ch = 'PN' #Selección de chorro
-rz = 6    #número de horas de rezago en horas, en multiplos de 6, empezando de cero
+ch = 'TT' #Selección de chorro
+rz = 960   #número de horas de rezago en horas, en multiplos de 6, empezando de cero
 
 "Fecha hasta donde se va a hacer HMM"
 if ch == 'TT' or ch == 'PP' or ch == 'PN':
@@ -144,7 +144,7 @@ if ch == 'TT' or ch == 'PP' or ch == 'PN':
 "Lectura de Estados"
 
 if ch == 'TT' or ch == 'PP' or ch == 'PN':
-    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/States_'+ch+'.csv', 'r')
+    rf     = open('/home/yordan/Descargas/States_'+ch+'.csv', 'r')
 
 reader = csv.reader(rf)
 states = [row for row in reader][1:]
@@ -205,7 +205,7 @@ for k in range(1, NM+1):
 
     "Posiciones del nc donde se cumplen las fechas en el estado deseado"
     pos_nc = [np.where(DATES == d)[0][0] for d in dates]
-    pos_nc = pos_nc + rz//6
+    pos_nc = np.array(pos_nc) + rz//6
 
     "Se extraen datos para los compuestos"
     CompSST = np.zeros((len(pos_nc), len(lat), len(lon)))
@@ -213,23 +213,39 @@ for k in range(1, NM+1):
     MESES        = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     for i, j in enumerate(pos_nc):
         mes = DATES[j].month
-        sst = file.variables[''][j]
+        sst = file.variables['sst'][j]
 
         cc_SST = CICLO_SST[MESES[mes-1]+'_18'] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
 
     	CompSST[i] = sst - cc_SST
 
+    CompSST[CompSST == -32767.0] = np.NAN
     "Se calcula las anomalías de la sst -> Se plotea"
-    Comp_sst[k-1] = np.mean(CompSST, axis = 0);
-    Min_prs.append(np.min(Comp_sst[k-1])); Max_prs.append(np.max(Comp_sst[k-1]))
+    Comp_sst[k-1] = np.nanmean(CompSST, axis = 0);
+    Min_prs.append(np.nanmin(Comp_sst[k-1])); Max_prs.append(np.nanmax(Comp_sst[k-1]))
 
 
-    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/19_expo_2018/' + ch + '_CompSST_JanDec_st'+str(S)+'_HMM'+str(NM)'_rezago_'+str(rz)+'h')
+    path.append('/media/yordan/YORDAN_USB/' + ch + '_CompSST_JanDec_st'+str(S)+'_HMM'+str(NM)+'_rezago_'+str(rz)+'h')
     Ttl.append('Jan-Dec SST Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ') + ' + str(rz) + 'h')
 
+if ch == 'TT':
+    MIN = -0.42
+    MAX = 0.15
+elif ch == 'PP':
+    MIN = -0.18
+    MAX = 0.26
+elif ch == 'PN':
+    MIN = -0.18
+    MAX = 0.22
+
 # Estado 1
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst, np.min(Min_prs), np.max(Max_prs), 'C', Ttl[0], path[0], C_T='k')
+#plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[0], np.min(Min_prs), np.max(Max_prs), 'C', Ttl[0], path[0], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[0], MIN, MAX, 'C', Ttl[0], path[0], C_T='k')
+
 # Estado 2
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst, np.min(Min_prs), np.max(Max_prs), 'C', Ttl[1], path[1], C_T='k')
+#plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[1], np.min(Min_prs), np.max(Max_prs), 'C', Ttl[1], path[1], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[1], MIN, MAX, 'C', Ttl[1], path[1], C_T='k')
+
 # Estado 3
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst, np.min(Min_prs), np.max(Max_prs), 'C', Ttl[2], path[2], C_T='k')
+#plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[2], np.min(Min_prs), np.max(Max_prs), 'C', Ttl[2], path[2], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_sst[2], MIN, MAX, 'C', Ttl[2], path[2], C_T='k')
