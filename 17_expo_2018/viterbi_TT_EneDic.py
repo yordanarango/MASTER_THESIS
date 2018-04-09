@@ -54,11 +54,10 @@ states3_new = np.insert(states3, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 states4_new = np.insert(states4, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 
 "Número de estados deseados"
-Nc = 3
+Nc = 4
 
 " Matriz de estados, donde cada fila es un año de estados"
 if Nc == 2:
-    print 'ok'
     state_matrix = np.reshape(states2_new, (len(states2_new)/366, 366))
 if Nc == 3:
     state_matrix = np.reshape(states3_new, (len(states3_new)/366, 366))
@@ -67,11 +66,19 @@ if Nc == 4:
 if Nc == 5:
     state_matrix = np.reshape(states5_new, (len(states5_new)/366, 366))
 
-# state_matrix[state_matrix == 1] = 33
-# state_matrix[state_matrix == 3] = 11
-#
-# state_matrix[state_matrix == 11] = 1
-# state_matrix[state_matrix == 33] = 3
+if Nc == 3:
+    state_matrix[state_matrix == 2] = 33
+    state_matrix[state_matrix == 3] = 22
+
+    state_matrix[state_matrix == 22] = 2
+    state_matrix[state_matrix == 33] = 3
+
+elif Nc == 4:
+    state_matrix[state_matrix == 2] = 44
+    state_matrix[state_matrix == 4] = 22
+
+    state_matrix[state_matrix == 22] = 2
+    state_matrix[state_matrix == 44] = 4
 
 "Ploteando con pcolor matriz de Viterbi de Estados"
 # Dos estados
@@ -144,4 +151,4 @@ plt.yticks(y_ticks, my_y_ticks, size=14)
 plt.xlabel('Day', size=17)
 ax.set_title(str(Nc)+' States - TT Wind', fontsize=18)
 
-#plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/Vit_matrix_TT_EneDic_'+str(Nc)+'st.png', bbox_inches='tight', dpi=300)
+plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/Vit_matrix_TT_EneDic_'+str(Nc)+'st.png', bbox_inches='tight', dpi=300)

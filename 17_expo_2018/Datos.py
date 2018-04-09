@@ -15,12 +15,12 @@ import pickle
 import csv
 
 "Escoger chorro: TT, PP, PN"
-ch = 'PP'
+ch = 'PN'
 
 "Leyendo datos"
 archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
 Variables = [x for x in archivo.variables]
-lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-365
+lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-360
 
 "Fechas"
 time    = archivo['time'][:]

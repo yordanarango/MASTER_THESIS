@@ -24,12 +24,12 @@ fechas  = [cdftime.num2date(x) for x in time]
 DATES   = pd.DatetimeIndex(fechas)[:] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 
 "Fecha hasta donde se va a hacer HMM"
-pos_2015_12_31 = np.where(DATES == Timestamp('1999-12-31 18:00:00'))[0][0]
-DATES          = DATES[3 : pos_2015_12_31+1 : 4]
-TIME           =  time[3 : pos_2015_12_31+1 : 4]
+pos_1999_12_31 = np.where(DATES == Timestamp('1999-12-31 18:00:00'))[0][0]
+DATES          = DATES[3 : pos_1999_12_31+1 : 4]
+TIME           =  time[3 : pos_1999_12_31+1 : 4]
 
 "Lectura de Estados"
-ch = 'PN2'
+ch = 'PN_ALT'
 
 rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/States_'+ch+'_79_99.csv', 'r')
 reader = csv.reader(rf)
@@ -56,7 +56,7 @@ states3_new = np.insert(states3, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 states4_new = np.insert(states4, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 
 "Número de estados deseados"
-Nc = 3
+Nc = 4
 
 " Matriz de estados, donde cada fila es un año de estados"
 if Nc == 2:
@@ -68,19 +68,19 @@ if Nc == 4:
 if Nc == 5:
     state_matrix = np.reshape(states5_new, (len(states5_new)/366, 366))
 
-if Nc == 2 and ch == 'PN1':
-    state_matrix[state_matrix == 1] = 22
-    state_matrix[state_matrix == 2] = 11
+if Nc == 3:
+    state_matrix[state_matrix == 2] = 33
+    state_matrix[state_matrix == 3] = 22
 
-    state_matrix[state_matrix == 11] = 1
     state_matrix[state_matrix == 22] = 2
+    state_matrix[state_matrix == 33] = 3
 
-if Nc == 3 and ch == 'PN1':
-    state_matrix[state_matrix == 1] = 22
-    state_matrix[state_matrix == 2] = 11
+elif Nc == 4:
+    state_matrix[state_matrix == 2] = 33
+    state_matrix[state_matrix == 3] = 22
 
-    state_matrix[state_matrix == 11] = 1
     state_matrix[state_matrix == 22] = 2
+    state_matrix[state_matrix == 33] = 3
 
 "Ploteando con pcolor matriz de Viterbi de Estados"
 # Dos estados

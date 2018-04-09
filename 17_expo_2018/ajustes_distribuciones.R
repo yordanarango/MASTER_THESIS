@@ -22,7 +22,7 @@ plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
 denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,0.45), plotstyle = "ggplot",
+         fitlty=c(1,1,1,1), ylim=c(0,0.15), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -32,14 +32,17 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
   
   geom_line(size=0.6)
 
-"Individuales"
-listdis     <- list(dwb)
-plot_legend <- c("Weibull")
+"INDIVIDUALES"
+"paramestros"
+ymax = 0.15
+
+listdis     <- list(dgm)
+plot_legend <- c("Gamma")
 
 denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("dimgray"), 
-         fitlty=c(1), ylim=c(0,0.45), plotstyle = "ggplot",
+         fitcol=c("blue"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -51,6 +54,57 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
 
 
 
+listdis     <- list(dln)
+plot_legend <- c("Lognormal")
+
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("red"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dlg)
+plot_legend <- c("Logistic")
+
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("goldenrod"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dwb)
+plot_legend <- c("Weibull")
+
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
 
 ############################# PAPAGAYO ###############################################
 data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/datos_PP_EneDic.csv"
@@ -71,7 +125,7 @@ plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
 denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,0.27), plotstyle = "ggplot",
+         fitlty=c(1,1,1,1), ylim=c(0,0.17), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -81,14 +135,17 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
   
   geom_line(size=0.6)
 
-"Individuales"
-listdis     <- list(dlg)
-plot_legend <- c("Logistic")
+"INDIVIDUALES"
+"parametros"
+ymax = 0.17
+
+listdis     <- list(dgm)
+plot_legend <- c("Gamma")
 
 denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("goldenrod"), 
-         fitlty=c(1), ylim=c(0,0.27), plotstyle = "ggplot",
+         fitcol=c("blue"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -99,6 +156,58 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
   geom_line(size=0.7)
 
 
+
+listdis     <- list(dln)
+plot_legend <- c("Lognormal")
+
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("red"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dlg)
+plot_legend <- c("Logistic")
+
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("goldenrod"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dwb)
+plot_legend <- c("Weibull")
+
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
 
 #############################  PANAMA  #############################################
 data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/datos_PN_EneDic.csv"
@@ -119,7 +228,7 @@ plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
 denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,1.1), plotstyle = "ggplot",
+         fitlty=c(1,1,1,1), ylim=c(0,0.23), plotstyle = "ggplot",
          breaks=20) +
   
   theme_bw() + 
@@ -129,14 +238,17 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
  
    geom_line(size=0.6)
 
-"Individuales"
-listdis     <- list(dwb)
-plot_legend <- c("Weibull")
+"INDIVIDUALES"
+"parametros"
+ymax = 0.23
+
+listdis     <- list(dgm)
+plot_legend <- c("Gamma")
 
 denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("dimgray"), 
-         fitlty=c(1), ylim=c(0,1.1), plotstyle = "ggplot",
+         fitcol=c("blue"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -146,3 +258,56 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
   
   geom_line(size=0.7)
 
+
+
+listdis     <- list(dln)
+plot_legend <- c("Lognormal")
+
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("red"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dlg)
+plot_legend <- c("Logistic")
+
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("goldenrod"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dwb)
+plot_legend <- c("Weibull")
+
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)

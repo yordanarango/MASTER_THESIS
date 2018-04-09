@@ -14,13 +14,13 @@ import matplotlib.colors as colors
 import pickle
 import csv
 
-"Escoger chorro: TT, PP, PN_1, PN_2, PN_3"
-ch = 'PN_3'
+
+ch = 'PN_ALT'
 
 "Leyendo datos"
 archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
 Variables = [x for x in archivo.variables]
-lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-365
+lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-360
 
 "Fechas"
 time    = archivo['time'][:]
@@ -38,12 +38,8 @@ if ch == 'TT':
 	lat_ch = 15  ; lon_ch = -95
 elif ch == 'PP':
 	lat_ch = 10.5; lon_ch = -88
-elif ch == 'PN_1':
+elif ch == 'PN' or ch == 'PN_ALT':
 	lat_ch = 7   ; lon_ch = -79.5
-elif ch == 'PN_2':
-	lat_ch = 7; lon_ch = -80
-elif ch == 'PN_3':
-	lat_ch = 8   ; lon_ch = -79.5
 
 "Viento"
 pos_lon = np.where(lon == lon_ch)[0][0] # Se toma un sólo pixel

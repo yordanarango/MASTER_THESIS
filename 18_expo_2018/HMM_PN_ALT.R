@@ -2,7 +2,7 @@ library(HiddenMarkov)
 
 ###############################   Dic_Ene   ################################
 
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/datos_TT_EneDic.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/datos_PN_ALT_EneDic_1979_1999.csv"
                  , header=FALSE, sep=",")
 
 spd = c(data$V1)
@@ -60,6 +60,5 @@ states4 <- Viterbi(x)
 "Datframe"
 
 DF <- data.frame("states2" = states2, "states3" = states3, "states4" = states4)
-write.csv(DF, 
-          file = "/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/States_TT.csv")
+write.csv(DF, file = "/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/States_PN_ALT_79_99.csv")
 

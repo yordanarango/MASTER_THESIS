@@ -54,7 +54,7 @@ states3_new = np.insert(states3, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 states4_new = np.insert(states4, pos_mar1_feb28, np.zeros(len(pos_mar1_feb28)))
 
 "Número de estados deseados"
-Nc = 2
+Nc = 4
 
 " Matriz de estados, donde cada fila es un año de estados"
 if Nc == 2:
@@ -66,12 +66,19 @@ if Nc == 4:
 if Nc == 5:
     state_matrix = np.reshape(states5_new, (len(states5_new)/366, 366))
 
-# state_matrix[state_matrix == 1] = 22
-# state_matrix[state_matrix == 2] = 11
-#
-# state_matrix[state_matrix == 11] = 1
-# state_matrix[state_matrix == 22] = 2
+if Nc == 3:
+    state_matrix[state_matrix == 2] = 33
+    state_matrix[state_matrix == 3] = 22
 
+    state_matrix[state_matrix == 33] = 3
+    state_matrix[state_matrix == 22] = 2
+
+elif Nc == 4:
+    state_matrix[state_matrix == 3] = 22
+    state_matrix[state_matrix == 2] = 33
+
+    state_matrix[state_matrix == 33] = 3
+    state_matrix[state_matrix == 22] = 2
 
 "Ploteando con pcolor matriz de Viterbi de Estados"
 # Dos estados

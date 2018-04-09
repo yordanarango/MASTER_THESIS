@@ -109,7 +109,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 
 "Si no se tiene buen computador, léase dictionario con los ciclos que ya se han calculado anteriormente"
 
-a = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/ciclo_diurno_anual_pressure_025_6h.bin', 'rb')
+a = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/ciclo_diurno_anual_presure_025_6h.bin', 'rb')
 
 CICLO_PRESSURE = pickle.load(a) # debe ser en hectopascales
 
@@ -132,22 +132,22 @@ fechas  = [cdftime.num2date(x) for x in time]
 fechas  = pd.DatetimeIndex(fechas)
 
 "Chorro"
-ch = 'TT' #Selección de chorro
+ch = 'PN_ALT' #Selección de chorro
 
 "Fecha hasta donde se va a hacer HMM"
-if ch == 'TT' or 'PP':
+if ch == 'TT' or ch == 'PP' or ch == 'PN':
     pos_2015_12_31 = np.where(fechas == Timestamp('2015-12-31 18:00:00'))[0][0]
     FECHAS         = fechas[3 : pos_2015_12_31+1 : 4]# Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
-elif ch[:2] == 'PN':
+elif ch == 'PN_ALT':
     pos_1999_12_31 = np.where(fechas == Timestamp('1999-12-31 18:00:00'))[0][0]
     FECHAS         = fechas[3 : pos_1999_12_31+1 : 4]# Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 
 "Lectura de Estados"
 
-if ch == 'TT' or 'PP':
+if ch == 'TT' or ch == 'PP' or ch == 'PN':
     rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/States_'+ch+'.csv', 'r')
-elif ch[:2] == 'PN':
-    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/States_'+ch+'.csv', 'r')
+elif ch == 'PN_ALT':
+    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/States_'+ch+'_79_99.csv', 'r')
 
 reader = csv.reader(rf)
 states = [row for row in reader][1:]
@@ -162,34 +162,34 @@ NM = 3
 " Se arregla el vector de estados "
 
 if ch == 'TT' and NM == 3:
-    states3[states3 == 1] = 33
-    states3[states3 == 3] = 11
+    states3[states3 == 2] = 33
+    states3[states3 == 3] = 22
 
-    states3[states3 == 11] = 1
+    states3[states3 == 22] = 2
     states3[states3 == 33] = 3
 
 elif ch == 'PP' and NM == 3:
-    states3[states3 == 3] = 11
-    states3[states3 == 1] = 22
-    states3[states3 == 2] = 33
-
-    states3[states3 == 33] = 3
-    states3[states3 == 22] = 2
-    states3[states3 == 11] = 1
-
-elif ch == 'PN2' and NM == 3:
-    stateS3[stateS3 == 3] = 22
-    stateS3[stateS3 == 2] = 33
-
-    stateS3[stateS3 == 33] = 3
-    stateS3[stateS3 == 22] = 2
-
-elif ch == 'PN3' and NM == 3:
     states3[states3 == 3] = 22
     states3[states3 == 2] = 33
 
     states3[states3 == 33] = 3
     states3[states3 == 22] = 2
+
+elif ch == 'PN' and NM == 3:
+    states3[states3 == 3] = 22
+    states3[states3 == 2] = 33
+
+    states3[states3 == 33] = 3
+    states3[states3 == 22] = 2
+
+elif ch == 'PN_ALT' and NM == 3:
+    states3[states3 == 3] = 22
+    states3[states3 == 2] = 33
+
+    states3[states3 == 33] = 3
+    states3[states3 == 22] = 2
+
+
 
 Min_prs = []
 Max_prs = []
@@ -217,7 +217,7 @@ for k in range(1, NM+1):
     MESES        = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     for i, j in enumerate(pos_nc):
         mes = DATES[j].month
-        pr  = archivo.variables['msl'][j]/100.
+        pr  = file.variables['msl'][j]/100.
 
         cc_PR = CICLO_PRESSURE[MESES[mes-1]+'_18'] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
 
@@ -225,9 +225,14 @@ for k in range(1, NM+1):
 
     "Se calcula la velocidad de las anomalías del viento. -> Se plotea"
     Comp_prs[k-1] = np.mean(CompPr, axis = 0);
-    Min_prs.append(np.min(Comp_prs[k-1])); Max_prs.append(np.max(Comp_prs[k-1]));
-    Ttl.append('Jan-Dec Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')');
-    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM))
+    Min_prs.append(np.min(Comp_prs[k-1])); Max_prs.append(np.max(Comp_prs[k-1]))
+
+    if ch == 'PN_ALT':
+        path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/' + ch + '_CompPressure_JanDec_79_99_st'+str(S)+'_HMM'+str(NM))
+        Ttl.append('Jan-Dec 1979-1999. Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
+    else:
+        path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM))
+        Ttl.append('Jan-Dec Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
 # Estado 1
 plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon[::2], lat[::2], Comp_prs[0, ::2, ::2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[0], path[0], C_T='k')
