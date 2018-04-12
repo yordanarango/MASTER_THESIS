@@ -103,6 +103,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 "Viento"
 # prs = archivo.variables['msl'][:]/100. # Para pasarlo a hectopascales
 
+
 "Se calcula ciclo anual de ciclo diurno"
 # CICLO_PRESSURE = ciclo_diurno_anual(prs, DATES, len(lat), len(lon))
 
@@ -118,7 +119,7 @@ CICLO_PRESSURE = pickle.load(a) # debe ser en hectopascales
 "Leyendo datos"
 file    = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/PRESION-SEA-LEVEL-ERA/MSLP_025x025_0x40N_120_55W.nc')
 lat     = file.variables['latitude'][88:161]
-lon     = file.variables['longitude'][80:181] - 360
+lon     = file.variables['longitude'][80:181]-360
 tempo   = file.variables['time'][:]
 CDFtime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 DATES   = [CDFtime.num2date(x) for x in tempo]
