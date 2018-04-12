@@ -30,9 +30,11 @@ class MidpointNormalize(colors.Normalize):
         # I'm ignoring masked values and all kinds of edge cases to make a
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
-        return np.ma.masked_array(np.interp(value, x, y)) 
+        return np.ma.masked_array(np.interp(value, x, y))
 
-def indices(Serie): # Serie que contiene dato cuando hay evento de chorro, y ceros cuando no se considera que hay evento de chorro
+def indices(Serie): # Devuelve posiciones donde empieza y termina un evento
+    # Serie que contiene dato cuando hay evento de chorro, y ceros cuando no se considera que hay evento de chorro
+
     EVENTOS = []
     i = 0
     while i < len(Serie)-1:
@@ -75,8 +77,8 @@ def ciclo_diurno_anual(matriz, fechas, len_lat, len_lon):
 	return Dict_ciclo
 
 
-def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None): 
-    
+def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None):
+
     # lllat (low-left-lat)   : float con la latitud de la esquina inferior izquierda
     # urlat (uper-right-lat) : float con la latitud de la esquina superior derecha
     # lllon (low-left-lon)   : float con la longitud de la esquina inferior izquierda en coordenas negativas este
@@ -84,11 +86,11 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
     # dist_lat               : entero que indica cada cuanto dibujar las lineas de los paralelos
     # dist_lon               : entero que indica cada cuanto dibujar las lineas de los meridianos
     # Lon                    : array de numpy con las longitudes del mapa a plotearse en coordenadas negativas este
-    # Lat                    : array de numpy con las longitudes del mapa a plotearse 
+    # Lat                    : array de numpy con las longitudes del mapa a plotearse
     # mapa                   : array de numpy 2D a plotearse con contourf
     # bar_min                : mínimo valor del mapa a plotearse
     # bar_max                : máximo valor del mapa a plotearse
-    # unds                   : string de las unidades de la variable que se va a plotear 
+    # unds                   : string de las unidades de la variable que se va a plotear
     # titulo                 : string del titulo que llevará el mapa
     # path                   : 'string de la dirección y el nombre del archivo que contendrá la figura a generarse'
     # wind                   : boolean que diga si se quiere pintar flechas de viento (corrientes), donde True es que sí se va a hacer
@@ -96,7 +98,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
     # mapa_v                 : array de numpay 2D con la componente en y de la velocidad y que será utilizado para pintar las flechas. Este tomara algun valor siempre y cuando wind=True
 
 
-    # return                 : gráfica o mapa  
+    # return                 : gráfica o mapa
 
     fig = plt.figure(figsize=(8,8), edgecolor='W',facecolor='W')
     ax = fig.add_axes([0.1,0.1,0.8,0.8])
@@ -111,7 +113,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
     x,y = map(lons,lats)
 
     bounds = np.linspace(bar_min, bar_max, 20)
-    bounds = np.around(bounds, decimals=2) 
+    bounds = np.around(bounds, decimals=2)
 
     if wind == False:
         CF1 = map.contourf(x,y,mapa, 20, norm=MidpointNormalize(midpoint=0), cmap= plt.cm.RdYlBu_r, levels=bounds, extend='max')#plt.cm.rainbow , plt.cm.RdYlBu_r
@@ -123,7 +125,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
     cb1 = plt.colorbar(CF1, orientation='horizontal', pad=0.05, shrink=0.8, boundaries=bounds)
     cb1.set_label(unds)
     ax.set_title(titulo, size='15', color = C_T)
-    
+
     if wind == True:
         Q = map.quiver(x[::2,::2], y[::2,::2], mapa_u[::2,::2], mapa_v[::2,::2], scale=150)
         plt.quiverkey(Q, 0.93, 0.05, 10, '10 m/s' )
@@ -141,10 +143,10 @@ RASI_Papagayo    = []
 RASI_Panama      = []
 
 for i in range(1998, 2012):
-    
-    mean_TT = nc.Dataset(u'/media/unal_isagen/TOSHIBA EXT/RASI/RASI_Tehuantepec_'+str(i)+'.nc')['WindSpeedMean'][:]
-    mean_PP = nc.Dataset(u'/media/unal_isagen/TOSHIBA EXT/RASI/RASI_Papagayo_'+str(i)+'.nc')['WindSpeedMean'][:]
-    mean_PN = nc.Dataset(u'/media/unal_isagen/TOSHIBA EXT/RASI/RASI_Panama_'+str(i)+'.nc')['WindSpeedMean'][:]
+
+    mean_TT = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Tehuantepec_'+str(i)+'.nc')['WindSpeedMean'][:]
+    mean_PP = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Papagayo_'+str(i)+'.nc')['WindSpeedMean'][:]
+    mean_PN = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Panama_'+str(i)+'.nc')['WindSpeedMean'][:]
 
     RASI_Tehuantepec.extend(mean_TT)
     RASI_Papagayo.extend(mean_PP)
@@ -159,13 +161,13 @@ EVN_PN     = indices(RASI_Panama)
 #
 Dates_RASI   = pd.date_range('1998-01-01', freq='6H', periods=len(RASI_Tehuantepec))
 
-Dates_TT_ini = [str(Dates_RASI[x[0]]) for x in EVN_TT]
-Dates_PP_ini = [str(Dates_RASI[x[0]]) for x in EVN_PP]
-Dates_PN_ini = [str(Dates_RASI[x[0]]) for x in EVN_PN]
+Dates_TT_ini = [str(Dates_RASI[x[0]]) for x in EVN_TT] # Fechas en las que empezaron los eventos
+Dates_PP_ini = [str(Dates_RASI[x[0]]) for x in EVN_PP] # Fechas en las que empezaron los eventos
+Dates_PN_ini = [str(Dates_RASI[x[0]]) for x in EVN_PN] # Fechas en las que empezaron los eventos
 
-Dates_TT_fin = [str(Dates_RASI[x[1]]) for x in EVN_TT]
-Dates_PP_fin = [str(Dates_RASI[x[1]]) for x in EVN_PP]
-Dates_PN_fin = [str(Dates_RASI[x[1]]) for x in EVN_PN]
+Dates_TT_fin = [str(Dates_RASI[x[1]]) for x in EVN_TT] # Fechas en las que terminaron los eventos
+Dates_PP_fin = [str(Dates_RASI[x[1]]) for x in EVN_PP] # Fechas en las que terminaron los eventos
+Dates_PN_fin = [str(Dates_RASI[x[1]]) for x in EVN_PN] # Fechas en las que terminaron los eventos
 
 Dates_TT_max = [str(Dates_RASI[(x[0] + np.where(RASI_Tehuantepec[x[0]:x[1]+1] == np.max(RASI_Tehuantepec[x[0]:x[1]+1])))[0][0]]) for x in EVN_TT] #fecha en que se da el máximo de cada evento
 Dates_PP_max = [str(Dates_RASI[(x[0] + np.where(RASI_Papagayo[x[0]:x[1]+1] == np.max(RASI_Papagayo[x[0]:x[1]+1])))[0][0]]) for x in EVN_PP] #fecha en que se da el máximo de cada evento
@@ -1057,7 +1059,7 @@ DUR_MEAN_MAX = {'DUR_75_100_MEAN_75_100_TT_MAX':Dlon_75_100_mean_75_100_TT_max, 
 
 Height = [700, 500, 300]
 
-for H in Height: 
+for H in Height:
 
 	"Datos geopotencial"
 	G       = nc.Dataset(u'/media/unal_isagen/TOSHIBA EXT/geopotential/geopotential_'+str(H)+'hPa.nc') #netCDF de altura geopotencial
@@ -1097,37 +1099,37 @@ for H in Height:
 				Dict_Num_fechas = {}
 				MIN_W = []
 				MAX_W = []
-				for perc1 in ['75_100', '50_75', '25_50']: 
-					for perc2 in ['75_100', '50_75', '25_50']: 
+				for perc1 in ['75_100', '50_75', '25_50']:
+					for perc2 in ['75_100', '50_75', '25_50']:
 						if cri1 != cri2:
-	           
+
 							if cri1+'_'+cri2 == 'MAX_MEAN':
-								FECHAS_INICIO = MAX_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = MAX_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = MAX_MEAN_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = MAX_MEAN_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 							elif cri1+'_'+cri2 == 'MAX_DUR':
-								FECHAS_INICIO = MAX_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = MAX_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = MAX_DUR_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = MAX_DUR_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 							elif cri1+'_'+cri2 == 'MEAN_MAX':
-								FECHAS_INICIO = MEAN_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = MEAN_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = MEAN_MAX_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = MEAN_MAX_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 							elif cri1+'_'+cri2 == 'MEAN_DUR':
-								FECHAS_INICIO = MEAN_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = MEAN_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = MEAN_DUR_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = MEAN_DUR_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 							elif cri1+'_'+cri2 == 'DUR_MAX':
-								FECHAS_INICIO = DUR_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = DUR_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = DUR_MAX_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = DUR_MAX_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 							elif cri1+'_'+cri2 == 'DUR_MEAN':
-								FECHAS_INICIO = DUR_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+								FECHAS_INICIO = DUR_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 								FECHAS_FIN    = DUR_MEAN_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 								FECHAS_MAX    = DUR_MEAN_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
@@ -1139,7 +1141,7 @@ for H in Height:
 								ANOM_GEO   = np.zeros((len(H_composites),len(lat),len(lon)))
 
 								for k, i in enumerate(range(-8,9)):
-		                            
+
 									anom_geo   = np.zeros((len(FECHAS_MAX), len(lat), len(lon)))
 									for g, m in enumerate(FECHAS_MAX):
 
@@ -1160,7 +1162,7 @@ for H in Height:
 								Dict_Num_fechas.update({ch+'_'+cri1+'_'+perc1+'_'+cri2+'_'+perc2:len(FECHAS_MAX)})
 								MIN_W.append(np.nanmin(ANOM_GEO))
 								MAX_W.append(np.nanmax(ANOM_GEO))
-    
+
 				min_W = np.nanmin(MIN_W)
 				max_W = np.nanmax(MAX_W)
 
@@ -1168,11 +1170,10 @@ for H in Height:
 
 					ANOM = Dict_comp[names]
 					for k, i, h in zip(range(len(H_composites)), range(-8,9), H_composites):
-                        
+
 						Anom_geo = ANOM[k]
 						Pos    = '%02d' % (k,)
 						N_eventos = Dict_Num_fechas[names]
 						titulo = u'Composite of geopotential height anomalies - '+str(H)+' hPa (Max '+h+')'+ '\n' +names+'% ('+str(N_eventos)+' events)'
 						path   = u'/media/unal_isagen/TOSHIBA EXT/COMPOSITES_GEO_POT/'+str(H)+'hPa/'+ch+'/'+cri1+'/'+names+'/'+Pos+'_'+names[3:]+'_'+h
 						plotear(lat[-1], lat[0], lon[0], lon[-1], 15, 15, lon, lat, Anom_geo, min_W, max_W, u'm', titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None)
-
