@@ -78,9 +78,10 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	ax.set_title(titulo, size='15', color = C_T)
 
 	if wind == True:
-		Q = map.quiver(x[::2,::2], y[::2,::2], mapa_u[::2,::2], mapa_v[::2,::2], scale=20)
+		Q = map.quiver(x[::4,::4], y[::4,::4], mapa_u[::2,::2], mapa_v[::2,::2], scale=20)
 		plt.quiverkey(Q, 0.93, 0.05, 2, '2 m/s' )
 
+    print "No copiar esta función para plotear mapas. Revisar la parte de los quiver. Comparar también con la parte del contourf"
 	#map.fillcontinents(color='white')
 	plt.savefig(path+'.png', bbox_inches='tight', dpi=300)
 	plt.close('all')
@@ -112,9 +113,9 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 
 "Si no se tiene buen computador, léase dictionario con los ciclos que ya se han calculado anteriormente"
 
-a = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/ciclo_diurno_anual_wind_025_6h.bin', 'rb')
-b = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/ciclo_diurno_anual_U_025_6h.bin', 'rb')
-c = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/ciclo_diurno_anual_V_025_6h.bin', 'rb')
+a = open('/home/yordan/Escritorio/ciclo_diurno_anual_wind_025_6h.bin', 'rb')
+b = open('/home/yordan/Escritorio/ciclo_diurno_anual_U_025_6h.bin', 'rb')
+c = open('/home/yordan/Escritorio/ciclo_diurno_anual_V_025_6h.bin', 'rb')
 
 CICLO_WIND = pickle.load(a)
 CICLO_U    = pickle.load(b)
@@ -124,7 +125,7 @@ CICLO_V    = pickle.load(c)
 
 
 "Leyendo datos"
-archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
+archivo = nc.Dataset('/home/yordan/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
 lat = archivo.variables['latitude'][:]       # va desde 7°N hasta 25°N
 lon = archivo.variables['longitude'][:]-360  # va desde -64.5°W hasta -101°W
 
@@ -135,7 +136,7 @@ fechas  = [cdftime.num2date(x) for x in time]
 DATES   = pd.DatetimeIndex(fechas)[:] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 
 "Chorro"
-ch = 'TT' #Selección de chorro
+ch = 'PN' #Selección de chorro
 
 "Fecha hasta donde se va a hacer HMM"
 if ch == 'TT' or ch == 'PP' or ch == 'PN':
@@ -149,9 +150,9 @@ elif ch == 'PN_ALT':
 "Lectura de Estados"
 
 if ch == 'TT' or ch == 'PP' or ch == 'PN':
-    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/States_'+ch+'.csv', 'r')
+    rf     = open('/home/yordan/Escritorio/States_'+ch+'.csv', 'r')
 elif ch == 'PN_ALT':
-    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/States_'+ch+'_79_99.csv', 'r')
+    rf     = open('/home/yordan/Escritorio/States_'+ch+'_79_99.csv', 'r')
 
 reader = csv.reader(rf)
 states = [row for row in reader][1:]
@@ -237,16 +238,16 @@ for k in range(1, NM+1):
     Min_spd.append(np.min(Comp_spd[k-1])); Max_spd.append(np.max(Comp_spd[k-1]));
 
     if ch == 'PN_ALT':
-        path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/18_expo_2018/' + ch + '_CompWind_JanDec_79_99_st'+str(S)+'_HMM'+str(NM))
+        path.append('/home/yordan/Escritorio/' + ch + '_CompWind_JanDec_79_99_st'+str(S)+'_HMM'+str(NM))
         Ttl.append('Jan-Dec 1979-1999. Wind Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
     else:
-        path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/' + ch + '_CompWind_JanDec_st'+str(S)+'_HMM'+str(NM))
+        path.append('/home/yordan/Escritorio/' + ch + '_CompWind_JanDec_st'+str(S)+'_HMM'+str(NM))
         Ttl.append('Jan-Dec Wind Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
 
 # Estado 1
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon[::2], lat[::2], Comp_spd[0, ::2, ::2], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[0], path[0], C_T='k', wind=True, mapa_u=Comp_u[0, ::2, ::2], mapa_v=Comp_v[0, ::2, ::2])
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_spd[0], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[0], path[0], C_T='k', wind=True, mapa_u=Comp_u[0, ::2, ::2], mapa_v=Comp_v[0, ::2, ::2])
 # Estado 2
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon[::2], lat[::2], Comp_spd[1, ::2, ::2], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[1], path[1], C_T='k', wind=True, mapa_u=Comp_u[1, ::2, ::2], mapa_v=Comp_v[1, ::2, ::2])
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_spd[1], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[1], path[1], C_T='k', wind=True, mapa_u=Comp_u[1, ::2, ::2], mapa_v=Comp_v[1, ::2, ::2])
 # Estado 3
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon[::2], lat[::2], Comp_spd[2, ::2, ::2], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[2], path[2], C_T='k', wind=True, mapa_u=Comp_u[2, ::2, ::2], mapa_v=Comp_v[2, ::2, ::2])
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_spd[2], np.min(Min_spd), np.max(Max_spd), 'm/s', Ttl[2], path[2], C_T='k', wind=True, mapa_u=Comp_u[2, ::2, ::2], mapa_v=Comp_v[2, ::2, ::2])
