@@ -118,6 +118,8 @@ a.close()
 
 "Leyendo datos"
 file    = nc.Dataset('/home/yordan/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/PRESION-SEA-LEVEL-ERA/MSLP_025x025_0x40N_120_55W.nc')
+# lat     = file.variables['latitude'][:]
+# lon     = file.variables['longitude'][:]-360
 lat     = file.variables['latitude'][64:161]
 lon     = file.variables['longitude'][64:197]-360
 tempo   = file.variables['time'][:]
@@ -211,6 +213,7 @@ for k in range(1, NM+1):
     MESES        = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     for i, j in enumerate(pos_nc):
         mes = DATES[j].month
+        #pr  = file.variables['msl'][j]/100.
         pr  = file.variables['msl'][j, 64:161, 64:197]/100.
 
         cc_PR = CICLO_PRESSURE[MESES[mes-1]+'_18'][64:161, 64:197] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
@@ -221,7 +224,8 @@ for k in range(1, NM+1):
     Comp_prs[k-1] = np.mean(CompPr, axis = 0);
     Min_prs.append(np.min(Comp_prs[k-1])); Max_prs.append(np.max(Comp_prs[k-1]))
 
-    path.append('/home/yordan/Escritorio/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM)+'_mesoescala_prueba')
+    #path.append('/home/yordan/Escritorio/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM))
+    path.append('/home/yordan/Escritorio/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM)+'_mesoescala')
     Ttl.append('Jan-Dec Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
 # Estado 1
