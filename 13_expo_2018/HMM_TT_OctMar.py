@@ -25,7 +25,7 @@ class MidpointNormalize(colors.Normalize):
         # I'm ignoring masked values and all kinds of edge cases to make a
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
-        return np.ma.masked_array(np.interp(value, x, y)) 
+        return np.ma.masked_array(np.interp(value, x, y))
 
 def ciclo_diurno_anual(matriz, fechas, len_lat, len_lon):
 	#matriz : matriz de numpy de 3 dimensiones donde cada capa corresponde a una fecha en el vector de pandas "fechas"
@@ -49,8 +49,8 @@ def ciclo_diurno_anual(matriz, fechas, len_lat, len_lon):
 	return Dict_ciclo
 
 
-def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None): 
-    
+def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None):
+
 	# lllat (low-left-lat)   : float con la latitud de la esquina inferior izquierda
 	# urlat (uper-right-lat) : float con la latitud de la esquina superior derecha
 	# lllon (low-left-lon)   : float con la longitud de la esquina inferior izquierda en coordenas negativas este
@@ -58,11 +58,11 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	# dist_lat               : entero que indica cada cuanto dibujar las lineas de los paralelos
 	# dist_lon               : entero que indica cada cuanto dibujar las lineas de los meridianos
 	# Lon                    : array de numpy con las longitudes del mapa a plotearse en coordenadas negativas este
-	# Lat                    : array de numpy con las longitudes del mapa a plotearse 
+	# Lat                    : array de numpy con las longitudes del mapa a plotearse
 	# mapa                   : array de numpy 2D a plotearse con contourf
 	# bar_min                : mínimo valor del mapa a plotearse
 	# bar_max                : máximo valor del mapa a plotearse
-	# unds                   : string de las unidades de la variable que se va a plotear 
+	# unds                   : string de las unidades de la variable que se va a plotear
 	# titulo                 : string del titulo que llevará el mapa
 	# path                   : 'string de la dirección y el nombre del archivo que contendrá la figura a generarse'
 	# wind                   : boolean que diga si se quiere pintar flechas de viento (corrientes), donde True es que sí se va a hacer
@@ -70,7 +70,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	# mapa_v                 : array de numpay 2D con la componente en y de la velocidad y que será utilizado para pintar las flechas. Este tomara algun valor siempre y cuando wind=True
 
 
-	# return                 : gráfica o mapa  
+	# return                 : gráfica o mapa
 
 	fig = plt.figure(figsize=(8,8), edgecolor='W',facecolor='W')
 	ax = fig.add_axes([0.1,0.1,0.8,0.8])
@@ -85,7 +85,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	x,y = map(lons,lats)
 
 	bounds = np.linspace(bar_min, bar_max, 20)
-	bounds = np.around(bounds, decimals=2) 
+	bounds = np.around(bounds, decimals=2)
 
 	if wind == False:
 		CF1 = map.contourf(x,y,mapa, 20, norm=MidpointNormalize(midpoint=0), cmap= plt.cm.RdYlBu_r, levels=bounds, extend='max')#plt.cm.rainbow , plt.cm.RdYlBu_r
@@ -96,7 +96,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 
 	cb1 = plt.colorbar(CF1, orientation='horizontal', pad=0.05, shrink=0.8, boundaries=bounds)
 	cb1.set_label(unds)
-	cb1.ax.tick_params(labelsize=9) 
+	cb1.ax.tick_params(labelsize=9)
 	ax.set_title(titulo, size='15', color = C_T)
 
 	if wind == True:
@@ -113,7 +113,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/U y V, 6 horas, 10 m, 1979-2016.nc')
 Variables = [x for x in archivo.variables]
 lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-365
-
+print 'Corregir valor de latitudes. Se está restando 365 en vez de 360. Con ese error están las gráficas'
 
 "Fechas"
 time    = archivo['time'][:]
@@ -130,7 +130,7 @@ wnd = np.sqrt(v*v+u*u)
 
 
 "Selección de datos en Octubre, Noviembre, Diciembre, Enero, Febrero, Marzo"
-DT  = [] 
+DT  = []
 WND = []
 
 leap_years   = np.array([x for x in set(DATES[DATES.is_leap_year].year)])   # Años bisiestos
@@ -159,7 +159,7 @@ wind  = np.concatenate(WND)													# 90-91
 																			# 00-01
 																			# 01-02
 																			# 02-03
-																			
+
 																			# 04-05
 																			# 05-06
 																			# 06-07
@@ -231,7 +231,7 @@ if Nc == 5:
 
 "Ploteando con pcolor matriz de Viterbi de Estados"
 cmap_name = 'my_list'
-cm        = colors.LinearSegmentedColormap.from_list(cmap_name, Colors, N=Nc) 
+cm        = colors.LinearSegmentedColormap.from_list(cmap_name, Colors, N=Nc)
 
 fig = plt.figure(figsize=(18,10))
 ax  = fig.add_axes([0.06, 0.05, 0.93, 0.8])
@@ -253,7 +253,7 @@ for row in range(1, state_matrix.shape[0]+1):
 x_ticks = np.arange(0, state_matrix.shape[1]+1)
 y_ticks = np.arange(0, state_matrix.shape[0]+1)
 
-my_y_ticks = ['80-81', '', '', '84-85', '', '', '88-89', '', '', '92-93', '', '', '96-97', '', '', '00-01', '', '', '04-05', '', '', 
+my_y_ticks = ['80-81', '', '', '84-85', '', '', '88-89', '', '', '92-93', '', '', '96-97', '', '', '00-01', '', '', '04-05', '', '',
               '08-09', '', '', '12-13', '', '']
 
 my_x_ticks = ['Oct-01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
@@ -298,7 +298,7 @@ plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/Viterbi_matrix
 # 	cdftime_G = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 # 	fechas_G  = [cdftime_G.num2date(k) for k in time_G]
 # 	dates_G   = pd.DatetimeIndex(fechas_G)
-	
+
 # 	lat        = G['latitude'][:]
 # 	lon        = G['longitude'][:]-360
 # 	lat_inf    = np.where(lat == 0)[0][0]
@@ -308,7 +308,7 @@ plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/Viterbi_matrix
 # 	lat        = lat[lat_sup:lat_inf+1]
 # 	lon        = lon[lon_sup:lon_inf+1]
 
-	
+
 # 	"Si se hace en work station o en cluster, hágase el ciclo anual del ciclo diurno como sigue"
 # 	#Geo_pot    = G['z'][:, lat_sup:lat_inf+1, lon_sup:lon_inf+1]/9.8      #extrayendo datos de altura geopotencial
 # 	#CICLO      = ciclo_diurno_anual(Geo_pot, dates_G, len(lat), len(lon))
@@ -334,7 +334,7 @@ plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/Viterbi_matrix
 
 # 	mean_anom_st1 = np.mean(Anom_G_st1, axis=0)
 # 	min_st1       = np.min(mean_anom_st1)
-# 	max_st1       = np.max(mean_anom_st1)    
+# 	max_st1       = np.max(mean_anom_st1)
 
 # 	for i, D in enumerate(date_st_2):
 # 		mes           = D.month
@@ -349,7 +349,7 @@ plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/Viterbi_matrix
 
 # 	mean_anom_st2 = np.mean(Anom_G_st2, axis=0)
 # 	min_st2       = np.min(mean_anom_st2)
-# 	max_st2       = np.max(mean_anom_st2)   
+# 	max_st2       = np.max(mean_anom_st2)
 
 # 	for i, D in enumerate(date_st_3):
 # 		mes           = D.month
@@ -408,9 +408,3 @@ plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/13_expo_2018/Viterbi_matrix
 # 	plotear(lat[-1], lat[0], lon[0], lon[-1], 20, 20, lon, lat, mean_anom_st4, MIN, MAX, u'm', Ttl4, path4, C_T='k', wind=False, mapa_u=None, mapa_v=None)
 # 	plotear(lat[-1], lat[0], lon[0], lon[-1], 20, 20, lon, lat, mean_anom_st4, min_st4, max_st4, u'm', Ttl4, path4+'_distinct_cb', C_T='k', wind=False, mapa_u=None, mapa_v=None)
 # 	print H, 'State 4'
-
-
-
-
-
-

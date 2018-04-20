@@ -26,7 +26,7 @@ lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-
 time    = archivo['time'][:]
 cdftime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 fechas  = [cdftime.num2date(x) for x in time]
-DATES   = pd.DatetimeIndex(fechas)[:] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
+DATES   = pd.DatetimeIndex(fechas) # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 
 "Fecha hasta donde se va a hacer HMM"
 pos_2015_12_31 = np.where(DATES == Timestamp('2015-12-31 18:00:00'))[0][0]
