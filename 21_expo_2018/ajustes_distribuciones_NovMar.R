@@ -4,26 +4,32 @@ library(ncdf4)
 library(ggplot2)
 
 ############################# TEHUANTEPEC ###############################################
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/20_expo_2018/datos_TT_NovMar.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/datos_TT_NovMar.csv"
                  , header=FALSE, sep=",")
 
 spd  <- c(data$V1)
+spd  <- spd/max(spd) * 0.9999999
 
 "Ajustes"
 dgm <- fitdist(spd, "gamma")          # gamma
 dln <- fitdist(spd, "lnorm")          # lognormal
 dlg <- fitdist(spd, "logis")          # logistica
 dwb <- fitdist(spd, "weibull")        # weibull
-dbt <- fitdist(spd/max(spd), "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
+dbt <- fitdist(spd, "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
+
+#"Godness of fit - Beta"
+#Loglikelihood = sum(log(dbeta(spd, dbt$estimate[1], dbt$estimate[2])))
+#AIC           = Loglikelihood*-2 + 4
+#BIC           = Loglikelihood*-2 + 2*log(length(spd))
 
 "Graficas todos"
-listdis     <- list(dgm, dln, dlg, dwb)
-plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
+listdis     <- list(dgm, dln, dlg, dbt)
+plot_legend <- c("Gamma", "Lognormal", "Logistic", "Beta")
 
-denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,0.11), plotstyle = "ggplot",
+         fitcol=c("blue","red","goldenrod", "black"), 
+         fitlty=c(1,1,1,1), ylim=c(0,2.8), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -35,12 +41,12 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
 
 "INDIVIDUALES"
 "paramestros"
-ymax = 0.15
+ymax = 2.8
 
 listdis     <- list(dgm)
 plot_legend <- c("Gamma")
 
-denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -58,7 +64,7 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
 listdis     <- list(dln)
 plot_legend <- c("Lognormal")
 
-denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("red"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -76,7 +82,7 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
 listdis     <- list(dlg)
 plot_legend <- c("Logistic")
 
-denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("goldenrod"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -94,9 +100,27 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
 listdis     <- list(dwb)
 plot_legend <- c("Weibull")
 
-denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dbt)
+plot_legend <- c("Beta")
+
+denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF (Nov-Mar)",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("black"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
@@ -108,25 +132,32 @@ denscomp(listdis, legendtext = plot_legend, main = "TT - Speed PDF",
   geom_line(size=0.7)
 
 ############################# PAPAGAYO ###############################################
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/20_expo_2018/datos_PP_NovMar.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/datos_PP_NovMar.csv"
                  , header=FALSE, sep=",")
 
 spd  <- c(data$V1)
+spd  <- spd/max(spd) * 0.9999999
 
 "Ajustes"
 dgm <- fitdist(spd, "gamma")         # gamma
 dln <- fitdist(spd, "lnorm")         # lognormal
 dlg <- fitdist(spd, "logis")         # logistica
 dwb <- fitdist(spd, "weibull")       # weibull
+dbt <- fitdist(spd, "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
+
+#"Godness of fit - Beta"
+#Loglikelihood = sum(log(dbeta(spd[-which(spd == 1)], dbt$estimate[1], dbt$estimate[2])))
+#AIC           = Loglikelihood*-2 + 4
+#BIC           = Loglikelihood*-2 + 2*log(length(spd))
 
 "Graficas todos"
-listdis     <- list(dgm, dln, dlg, dwb)
-plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
+listdis     <- list(dgm, dln, dlg, dbt)
+plot_legend <- c("Gamma", "Lognormal", "Logistic", "Beta" )
 
-denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,0.21), plotstyle = "ggplot",
+         fitcol=c("blue","red","goldenrod", "black"), 
+         fitlty=c(1,1,1,1), , ylim=c(0,3.1), plotstyle = "ggplot",
          breaks=20) + 
   
   theme_bw() + 
@@ -138,12 +169,12 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
 
 "INDIVIDUALES"
 "parametros"
-ymax = 0.17
+ymax = 3.1
 
 listdis     <- list(dgm)
 plot_legend <- c("Gamma")
 
-denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -161,7 +192,7 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
 listdis     <- list(dln)
 plot_legend <- c("Lognormal")
 
-denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("red"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -179,7 +210,7 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
 listdis     <- list(dlg)
 plot_legend <- c("Logistic")
 
-denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("goldenrod"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -197,9 +228,27 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
 listdis     <- list(dwb)
 plot_legend <- c("Weibull")
 
-denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dbt)
+plot_legend <- c("Beta")
+
+denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF (Nov-Mar)",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("black"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
@@ -211,25 +260,32 @@ denscomp(listdis, legendtext = plot_legend, main = "PP - Speed PDF",
   geom_line(size=0.7)
 
 #############################  PANAMA  #############################################
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/20_expo_2018/datos_PN_NovMar.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/datos_PN_NovMar.csv"
                  , header=FALSE, sep=",")
 
 spd  <- c(data$V1)
+spd  <- spd/max(spd) * 0.9999999
 
 "Ajustes"
 dgm <- fitdist(spd, "gamma")         # gamma
 dln <- fitdist(spd, "lnorm")         # lognormal
 dlg <- fitdist(spd, "logis")         # logistica
 dwb <- fitdist(spd, "weibull")       # weibull
+dbt <- fitdist(spd, "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
+
+#"Godness of fit - Beta"
+#Loglikelihood = sum(log(dbeta(spd[-which(spd == 1)], dbt$estimate[1], dbt$estimate[2])))
+#AIC           = Loglikelihood*-2 + 4
+#BIC           = Loglikelihood*-2 + 2*log(length(spd))
 
 "Graficas todos"
-listdis     <- list(dgm, dln, dlg, dwb)
-plot_legend <- c("Gamma", "Lognormal", "Logistic", "Weibull")
+listdis     <- list(dgm, dln, dlg, dbt)
+plot_legend <- c("Gamma", "Lognormal", "Logistic", "Beta")
 
-denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
-         fitcol=c("blue","red","goldenrod", "dimgray"), 
-         fitlty=c(1,1,1,1), ylim=c(0,0.20), plotstyle = "ggplot",
+         fitcol=c("blue","red","goldenrod", "black"), 
+         fitlty=c(1,1,1,1), ylim=c(0,2.4), plotstyle = "ggplot",
          breaks=20) +
   
   theme_bw() + 
@@ -241,12 +297,12 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
 
 "INDIVIDUALES"
 "parametros"
-ymax = 0.23
+ymax = 2.4
 
 listdis     <- list(dgm)
 plot_legend <- c("Gamma")
 
-denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("blue"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -264,7 +320,7 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
 listdis     <- list(dln)
 plot_legend <- c("Lognormal")
 
-denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("red"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -282,7 +338,7 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
 listdis     <- list(dlg)
 plot_legend <- c("Logistic")
 
-denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("goldenrod"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
@@ -300,9 +356,27 @@ denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",
 listdis     <- list(dwb)
 plot_legend <- c("Weibull")
 
-denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF",  
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
          xlab = "Speed [m/s]", ylab = "PDF", 
          fitcol=c("dimgray"), 
+         fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
+         breaks=20) + 
+  
+  theme_bw() + 
+  
+  theme(legend.text=element_text(size=13), legend.position = c(0.85, 0.8), 
+        plot.title = element_text(hjust = 0.5))+
+  
+  geom_line(size=0.7)
+
+
+
+listdis     <- list(dbt)
+plot_legend <- c("Beta")
+
+denscomp(listdis, legendtext = plot_legend, main = "PN - Speed PDF (Nov-Mar)",  
+         xlab = "Speed [m/s]", ylab = "PDF", 
+         fitcol=c("black"), 
          fitlty=c(1), ylim=c(0, ymax), plotstyle = "ggplot",
          breaks=20) + 
   
