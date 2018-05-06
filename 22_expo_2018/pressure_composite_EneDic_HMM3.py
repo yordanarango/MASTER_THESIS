@@ -218,12 +218,21 @@ for k in range(1, NM+1):
     Min_prs.append(np.min(Comp_prs[k-1])); Max_prs.append(np.max(Comp_prs[k-1]))
 
 
-    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/22_expo_2018/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM)+'_anom')
+    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/22_expo_2018/PR_COMPOSITES/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM)+'_anom')
     Ttl.append('Jan-Dec Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
+"Una barra para todos los estados"
 # Estado 1
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0, ::2, ::2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[0], path[0], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[0], path[0], C_T='k')
 # Estado 2
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1, ::2, ::2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[1], path[1], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[1], path[1], C_T='k')
 # Estado 3
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2, ::2, ::2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[2], path[2], C_T='k')
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[2], path[2], C_T='k')
+
+"Barra individual para cada estado"
+# Estado 1
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], Min_prs[0], Max_prs[0], 'hPa', Ttl[0], path[0]+'_conjunto', C_T='k')
+# Estado 2
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], Min_prs[1], Max_prs[1], 'hPa', Ttl[1], path[1]+'_conjunto', C_T='k')
+# Estado 3
+plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], Min_prs[2], Max_prs[2], 'hPa', Ttl[2], path[2]+'_conjunto', C_T='k')

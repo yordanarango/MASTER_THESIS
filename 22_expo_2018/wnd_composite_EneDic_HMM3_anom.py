@@ -230,7 +230,7 @@ for k in range(1, NM+1):
 
 
 
-    path.append('/home/yordan/Escritorio/' + ch + '_CompWind_JanDec_st'+str(S)+'_HMM'+str(NM)+'_anom')
+    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/22_expo_2018/WND_COMPOSITES/' + ch + '_CompWind_JanDec_st'+str(S)+'_HMM'+str(NM)+'_anom')
     Ttl.append('Jan-Dec Wind Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
 "Una barra para todos los estados"
