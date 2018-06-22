@@ -1,4 +1,5 @@
 library(HiddenMarkov)
+library(fitdistrplus)
 
 ###############################   Dic_Ene   ################################
 

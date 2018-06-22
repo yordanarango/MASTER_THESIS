@@ -9,33 +9,33 @@ import netCDF4 as nc
 from netcdftime import utime
 from pandas import Timestamp
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import pickle
 import csv
-#from mpl_toolkits.basemap import Basemap
 
-"FUNCIONES"
 
-"###################################################################################################################################"
 
 "Escoger chorro: TT, PP, PN"
 ch = 'PN'
 
+
 "Leyendo datos"
-archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
+archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/ERA-INTERIM/WIND/wind_big_area_925hPa.nc')
 Variables = [x for x in archivo.variables]
 lat = archivo.variables['latitude'][:]; lon = archivo.variables['longitude'][:]-360
+
 
 "Fechas"
 time    = archivo['time'][:]
 cdftime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 fechas  = [cdftime.num2date(x) for x in time]
-DATES   = pd.DatetimeIndex(fechas) # Se toma una sóla hora del día de la velocidad
+DATES   = pd.DatetimeIndex(fechas) # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
+
 
 "Fecha hasta donde se va a hacer HMM"
-DATES          = DATES[3::4]
-TIME           =  time[3::4]
+pos_2017_04_30 = np.where(DATES == Timestamp('2017-04-30 18:00:00'))[0][0]
+DATES          = DATES[3 : pos_2017_04_30+1 : 4]
+TIME           =  time[3 : pos_2017_04_30+1 : 4]
+
 
 "coordenadas"
 if ch == 'TT':
@@ -45,12 +45,14 @@ elif ch == 'PP':
 elif ch == 'PN':
 	lat_ch = 7   ; lon_ch = -79.5
 
+
 "Viento"
 pos_lon = np.where(lon == lon_ch)[0][0] # Se toma un sólo pixel
 pos_lat = np.where(lat == lat_ch)[0][0]
-v   = archivo['v10'][3::4, pos_lat, pos_lon] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
-u   = archivo['u10'][3::4, pos_lat, pos_lon] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
+v   = archivo['v'][3: pos_2017_04_30+1: 4, pos_lat, pos_lon] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
+u   = archivo['u'][3: pos_2017_04_30+1: 4, pos_lat, pos_lon] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 wnd = np.sqrt(v*v+u*u)
+
 
 "Selección de datos en Noviembre, Diciembre, Enero, Febrero, Marzo, Abril"
 DT  = []
@@ -78,6 +80,7 @@ dates = pd.DatetimeIndex(np.concatenate(DT))
 wind  = np.concatenate(WND)
 tm    = np.concatenate(TM)
 
+
 "Remueve Ciclo Anual"
 def cic_anual(data, dates):
 
@@ -88,13 +91,18 @@ def cic_anual(data, dates):
 		anom[pos] = data[pos] - mean
 	return anom
 
+
 ANOM = cic_anual(wind, dates)
 ANOM = ANOM - np.min(ANOM) + 0.0000001 # Como el mínimo es número negativo, si lo resto, en realidad estoy sumando un positivo. El mínimo valor de la nueva serie, será 0.0000001
 
 
 "Se guardan datos"
-wf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/23_expo_2018/datos_'+ch+'_NovAbr_anom.csv', 'w')
+wf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/25_expo_2018/datos_'+ch+'_NovAbr_anom_925.csv', 'w')
 writer = csv.writer(wf)
 for i, row in enumerate(ANOM):
     writer.writerow([row, tm[i], dates[i]])
 wf.close()
+
+
+
+

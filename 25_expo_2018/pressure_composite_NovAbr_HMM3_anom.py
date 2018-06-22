@@ -115,70 +115,77 @@ CICLO_PRESSURE = pickle.load(a) # debe ser en hectopascales
 
 "################################################################################################################"
 
+"Chorro y dominio"
+ch = 'TT' #Selección de chorro
+DM = 'big' # small o big
+
 "Leyendo datos"
-file    = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/PRESION-SEA-LEVEL-ERA/MSLP_025x025_0x40N_120_55W.nc')
-lat     = file.variables['latitude'][:]
-lon     = file.variables['longitude'][:] - 360
+file    = nc.Dataset('/home/yordan/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/PRESION-SEA-LEVEL-ERA/MSLP_025x025_0x40N_120_55W.nc')
+if DM == 'big':
+    lat     = file.variables['latitude'][:]
+    lon     = file.variables['longitude'][:] - 360
+elif DM == 'small':
+    lat     = file.variables['latitude'][64:]
+    lon     = file.variables['longitude'][64:185] - 360
+
 tempo   = file.variables['time'][:]
 CDFtime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 DATES   = [CDFtime.num2date(x) for x in tempo]
 DATES   = pd.DatetimeIndex(DATES)
 
 "Fechas"
-archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
+archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/ERA-INTERIM/WIND/wind_big_area_925hPa.nc')
 time    = archivo['time'][:]
 cdftime = utime('hours since 1900-01-01 00:00:0.0', calendar='gregorian')
 fechas  = [cdftime.num2date(x) for x in time]
 fechas  = pd.DatetimeIndex(fechas)
 
-"Chorro"
-ch = 'TT'
 
-"Fecha hasta donde se va a hacer HMM"
-if ch == 'TT' or ch == 'PP' or ch == 'PN':
-    pos_2015_12_31 = np.where(fechas == Timestamp('2015-12-31 18:00:00'))[0][0]
-    FECHAS         = fechas[3 : pos_2015_12_31+1 : 4]# Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
+"Selección de fechas en Noviembre, Diciembre, Enero, Febrero, Marzo, Abril"
+pos_2017_04_30 = np.where(DATES == Timestamp('2017-04-30 18:00:00'))[0][0]
+FCH = fechas[3: pos_2017_04_30 +1:4]
+DT  = []
+
+leap_years   = np.array([x for x in set(FCH[FCH.is_leap_year].year)])   # Años bisiestos
+normal_years = np.array([x for x in set(FCH[~FCH.is_leap_year].year)])  # Años normales
+years        = np.array([x for x in set(FCH.year)])
+
+for i in years[:-1]:
+
+    pos = np.where(FCH == pd.Timestamp(str(i)+'-11-01 18:00:00'))[0][0]
+
+    if np.any(normal_years == i+1) == True:
+    	DT.append(FCH[pos:pos+181])
+    else:
+    	DT.append(FCH[pos:pos+182])
+
+FECHAS = pd.DatetimeIndex(np.concatenate(DT))
+
 
 "Lectura de Estados"
-
-if ch == 'TT' or ch == 'PP' or ch == 'PN':
-    rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/22_expo_2018/States_'+ch+'_anom.csv', 'r')
-
+rf     = open('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/25_expo_2018/States_'+ch+'_NovAbr_anom.csv', 'r')
 reader = csv.reader(rf)
 states = [row for row in reader][1:]
 rf.close()
 
-states3 = np.array([int(x[2]) for x in states])
+states6 = np.array([int(x[5]) for x in states])
 
 
 "NM: Número de estados del modelo."
-NM = 3
+NM = 6
 
 " Se arregla el vector de estados "
 
-if ch == 'TT' and NM == 3:
-    states3[states3 == 2] = 33
-    states3[states3 == 3] = 22
+if ch == 'TT' and NM == 6:
+    state6[state6 == 2] = 33
+    state6[state6 == 3] = 11
+    state6[state6 == 5] = 22
+    state6[state6 == 1] = 55
 
-    states3[states3 == 22] = 2
-    states3[states3 == 33] = 3
-
-elif ch == 'PP' and NM == 3:
-    states3[states3 == 1] = 33
-    states3[states3 == 2] = 11
-    states3[states3 == 3] = 22
-
-    states3[states3 == 11] = 1
-    states3[states3 == 22] = 2
-    states3[states3 == 33] = 3
-
-elif ch == 'PN' and NM == 3:
-    states3[states3 == 1] = 22
-    states3[states3 == 2] = 11
-
-    states3[states3 == 11] = 1
-    states3[states3 == 22] = 2
-
+    state6[state6 == 11] = 1
+    state6[state6 == 22] = 2
+    state6[state6 == 33] = 3
+    state6[state6 == 55] = 5
 
 
 Min_prs = []
@@ -193,7 +200,7 @@ for k in range(1, NM+1):
     S  = k
 
     if NM == 3: # Se arregla el vector de estados
-        ST = states3
+        ST = states6
 
     pos   = np.where(ST == S)[0]
     dates = FECHAS[pos]
@@ -207,32 +214,34 @@ for k in range(1, NM+1):
     MESES        = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic']
     for i, j in enumerate(pos_nc):
         mes = DATES[j].month
-        pr  = file.variables['msl'][j]/100.
 
-        cc_PR = CICLO_PRESSURE[MESES[mes-1]+'_18'] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
+        if DM == 'big':
+            pr  = file.variables['msl'][j]/100.
+            cc_PR = CICLO_PRESSURE[MESES[mes-1]+'_18'] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
+        elif DM == 'small':
+            pr  = file.variables['msl'][j, 64:, 64:185]/100.
+            cc_PR = CICLO_PRESSURE[MESES[mes-1]+'_18'][64:, 64:185] # Porque los estados se hicieron para la hora de las 18 horas que es cuando se da la mayor velocidad en el día, y fue con lo que se hicieron los HMM
 
     	CompPr[i] = pr - cc_PR
 
-    "Se calcula anomalías de la presión. -> Se plotea"
+    "Se calcula las anomalías de la presión. -> Se plotea"
     Comp_prs[k-1] = np.mean(CompPr, axis = 0);
     Min_prs.append(np.min(Comp_prs[k-1])); Max_prs.append(np.max(Comp_prs[k-1]))
 
+    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/25_expo_2018/PR_COMPOSITES/' + ch + '_CompPressure_NovAbr_st'+str(S)+'_HMM'+str(NM)+'_'+DM+'_anom_925')
+    Ttl.append('Nov-Apr Sea Level Pressure Anomalies Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
 
-    path.append('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/22_expo_2018/PR_COMPOSITES/' + ch + '_CompPressure_JanDec_st'+str(S)+'_HMM'+str(NM)+'_anom')
-    Ttl.append('Jan-Dec Sea Level Pressure Composite \n' + ch + ' - State ' + str(S) + ' (HMM ' + str(NM) + ')')
-
-"Una barra para todos los estados"
-# Estado 1
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[0], path[0], C_T='k')
-# Estado 2
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[1], path[1], C_T='k')
-# Estado 3
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[2], path[2], C_T='k')
-
-"Barra individual para cada estado"
-# Estado 1
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], Min_prs[0], Max_prs[0], 'hPa', Ttl[0], path[0]+'_individual', C_T='k')
-# Estado 2
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], Min_prs[1], Max_prs[1], 'hPa', Ttl[1], path[1]+'_individual', C_T='k')
-# Estado 3
-plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], Min_prs[2], Max_prs[2], 'hPa', Ttl[2], path[2]+'_individual', C_T='k')
+if DM == 'big':
+    # Estado 1
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[0], path[0], C_T='k')
+    # Estado 2
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[1], path[1], C_T='k')
+    # Estado 3
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], np.min(Min_prs), np.max(Max_prs), 'hPa', Ttl[2], path[2], C_T='k')
+elif DM == 'small':
+    # Estado 1
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[0], Min_prs[0], Max_prs[0], 'hPa', Ttl[0], path[0], C_T='k')
+    # Estado 2
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[1], Min_prs[1], Max_prs[1], 'hPa', Ttl[1], path[1], C_T='k')
+    # Estado 3
+    plotear(lat[-1], lat[0], lon[0], lon[-1], 4, 7, lon, lat, Comp_prs[2], Min_prs[2], Max_prs[2], 'hPa', Ttl[2], path[2], C_T='k')

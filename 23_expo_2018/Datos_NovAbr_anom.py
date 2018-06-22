@@ -9,15 +9,9 @@ import netCDF4 as nc
 from netcdftime import utime
 from pandas import Timestamp
 import pandas as pd
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
 import pickle
 import csv
-#from mpl_toolkits.basemap import Basemap
 
-"FUNCIONES"
-
-"###################################################################################################################################"
 
 "Escoger chorro: TT, PP, PN"
 ch = 'PN'

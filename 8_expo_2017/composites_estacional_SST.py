@@ -30,7 +30,7 @@ class MidpointNormalize(colors.Normalize):
         # I'm ignoring masked values and all kinds of edge cases to make a
         # simple example...
         x, y = [self.vmin, self.midpoint, self.vmax], [0, 0.5, 1]
-        return np.ma.masked_array(np.interp(value, x, y)) 
+        return np.ma.masked_array(np.interp(value, x, y))
 
 def indices(Serie): # Serie que contiene dato cuando hay evento de chorro, y ceros cuando no se considera que hay evento de chorro
     EVENTOS = []
@@ -75,8 +75,8 @@ def ciclo_diurno_anual(matriz, fechas, len_lat, len_lon):
 	return Dict_ciclo
 
 
-def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None): 
-    
+def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_min, bar_max, unds, titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None):
+
 	# lllat (low-left-lat)   : float con la latitud de la esquina inferior izquierda
 	# urlat (uper-right-lat) : float con la latitud de la esquina superior derecha
 	# lllon (low-left-lon)   : float con la longitud de la esquina inferior izquierda en coordenas negativas este
@@ -84,11 +84,11 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	# dist_lat               : entero que indica cada cuanto dibujar las lineas de los paralelos
 	# dist_lon               : entero que indica cada cuanto dibujar las lineas de los meridianos
 	# Lon                    : array de numpy con las longitudes del mapa a plotearse en coordenadas negativas este
-	# Lat                    : array de numpy con las longitudes del mapa a plotearse 
+	# Lat                    : array de numpy con las longitudes del mapa a plotearse
 	# mapa                   : array de numpy 2D a plotearse con contourf
 	# bar_min                : mínimo valor del mapa a plotearse
 	# bar_max                : máximo valor del mapa a plotearse
-	# unds                   : string de las unidades de la variable que se va a plotear 
+	# unds                   : string de las unidades de la variable que se va a plotear
 	# titulo                 : string del titulo que llevará el mapa
 	# path                   : 'string de la dirección y el nombre del archivo que contendrá la figura a generarse'
 	# wind                   : boolean que diga si se quiere pintar flechas de viento (corrientes), donde True es que sí se va a hacer
@@ -96,7 +96,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	# mapa_v                 : array de numpay 2D con la componente en y de la velocidad y que será utilizado para pintar las flechas. Este tomara algun valor siempre y cuando wind=True
 
 
-	# return                 : gráfica o mapa  
+	# return                 : gráfica o mapa
 
 	fig = plt.figure(figsize=(8,8), edgecolor='W',facecolor='W')
 	ax = fig.add_axes([0.1,0.1,0.8,0.8])
@@ -111,7 +111,7 @@ def plotear(lllat, urlat, lllon, urlon, dist_lat, dist_lon, Lon, Lat, mapa, bar_
 	x,y = map(lons,lats)
 
 	bounds = np.linspace(bar_min, bar_max, 20)
-	bounds = np.around(bounds, decimals=2) 
+	bounds = np.around(bounds, decimals=2)
 
 	if wind == False:
 		CF1 = map.contourf(x,y,mapa, 20, norm=MidpointNormalize(midpoint=0), cmap= plt.cm.RdYlBu_r, levels=bounds, extend='max')#plt.cm.rainbow , plt.cm.RdYlBu_r
@@ -142,9 +142,9 @@ RASI_Papagayo    = []
 RASI_Panama      = []
 
 for i in range(1998, 2012):
-	mean_TT = nc.Dataset(u'/home/unal_isagen/Documents/Yordan/RASI/RASI_Tehuantepec_'+str(i)+'.nc')['WindSpeedMean'][:]
-	mean_PP = nc.Dataset(u'/home/unal_isagen/Documents/Yordan/RASI/RASI_Papagayo_'+str(i)+'.nc')['WindSpeedMean'][:]
-	mean_PN = nc.Dataset(u'/home/unal_isagen/Documents/Yordan/RASI/RASI_Panama_'+str(i)+'.nc')['WindSpeedMean'][:]
+	mean_TT = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Tehuantepec_'+str(i)+'.nc')['WindSpeedMean'][:]
+	mean_PP = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Papagayo_'+str(i)+'.nc')['WindSpeedMean'][:]
+	mean_PN = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/RASI/RASI_Panama_'+str(i)+'.nc')['WindSpeedMean'][:]
 
 	RASI_Tehuantepec.extend(mean_TT)
 	RASI_Papagayo.extend(mean_PP)
@@ -1056,7 +1056,7 @@ DUR_MEAN_MAX = {'DUR_75_100_MEAN_75_100_TT_MAX':Dlon_75_100_mean_75_100_TT_max, 
 
 "Datos SST"
 
-archivo = nc.Dataset(u'/home/unal_isagen/Documents/Yordan/SST_DATA/sst_grid_025_fullworld_1998.nc')
+archivo = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/ERA-INTERIM/SST_DATA/sst_grid_025_fullworld_1998.nc')
 lat       = archivo['latitude'][:]
 lon       = archivo['longitude'][:]
 lat_inf   = np.where(lat == 0)[0][0]
@@ -1071,7 +1071,7 @@ dates_ERA = pd.date_range('1997-12-01 00:00:00', '2011-12-31 18:00:00', freq='6H
 "Seleccionando los datos"
 for i in range(1997, 2012): # Se quiere obtener las fechas de ERA para saber cuandos slices debe tener la matríz que contendrá los datos
 
-	archivo = nc.Dataset(u'/home/unal_isagen/Documents/Yordan/SST_DATA/sst_grid_025_fullworld_'+str(i)+'.nc')
+	archivo = nc.Dataset(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/ERA-INTERIM/SST_DATA/sst_grid_025_fullworld_'+str(i)+'.nc')
 
 	if i == 1997:
 		SST       = archivo.variables['sst'][:, lat_sup:lat_inf+1, lon_sup:lon_inf+1]
@@ -1095,37 +1095,37 @@ MAX_W = []
 for ch in ['TT', 'PP', 'PN']:
     for cri1 in ['MEAN']:
     	for cri2 in ['DUR']:
-			for perc1 in ['75_100', '50_75', '25_50']: 
-				for perc2 in ['75_100', '50_75', '25_50']: 
+			for perc1 in ['75_100', '50_75', '25_50']:
+				for perc2 in ['75_100', '50_75', '25_50']:
 					if cri1 != cri2:
-           
+
 						if cri1+'_'+cri2 == 'MAX_MEAN':
-							FECHAS_INICIO = MAX_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = MAX_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = MAX_MEAN_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = MAX_MEAN_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 						elif cri1+'_'+cri2 == 'MAX_DUR':
-							FECHAS_INICIO = MAX_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = MAX_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = MAX_DUR_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = MAX_DUR_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 						elif cri1+'_'+cri2 == 'MEAN_MAX':
-							FECHAS_INICIO = MEAN_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = MEAN_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = MEAN_MAX_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = MEAN_MAX_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 						elif cri1+'_'+cri2 == 'MEAN_DUR':
-							FECHAS_INICIO = MEAN_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = MEAN_DUR_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = MEAN_DUR_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = MEAN_DUR_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 						elif cri1+'_'+cri2 == 'DUR_MAX':
-							FECHAS_INICIO = DUR_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = DUR_MAX_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = DUR_MAX_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = DUR_MAX_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
 						elif cri1+'_'+cri2 == 'DUR_MEAN':
-							FECHAS_INICIO = DUR_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI'] 
+							FECHAS_INICIO = DUR_MEAN_INI[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_INI']
 							FECHAS_FIN    = DUR_MEAN_FIN[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_FIN']
 							FECHAS_MAX    = DUR_MEAN_MAX[cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ch+'_MAX']
 
@@ -1133,7 +1133,7 @@ for ch in ['TT', 'PP', 'PN']:
 							fechas_max = [x for x in FECHAS_MAX if pd.Timestamp(x).month == st+1]
 
 							if len(fechas_max) != 0:
-								os.mkdir(u'/home/unal_isagen/Documents/Yordan/COMPOSITES_SST_ESTACIONAL/'+ch+'/'+ST+'/'+ch+'_'+cri1+'_'+perc1+'_'+cri2+'_'+perc2, 0777)
+								os.mkdir(u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/8_expo_2017/COMPOSITES_SST_ESTACIONAL/'+ch+'/'+ST+'/'+ch+'_'+cri1+'_'+perc1+'_'+cri2+'_'+perc2, 0777)
 
 								print ch+'_'+cri1+'_'+perc1+'_'+cri2+'_'+perc2+'_'+ST
 
@@ -1174,5 +1174,5 @@ for num, names in enumerate(Dict_comp.keys()):
 		Pos    = '%02d' % (k,)
 		N_eventos = Dict_Num_fechas[names]
 		titulo = u'Compuesto de anomalías de la SST - '+'(Max '+h+')'+ '\n' +names+' ('+str(N_eventos)+' eventos)'
-		path   = u'/home/unal_isagen/Documents/Yordan/COMPOSITES_SST_ESTACIONAL/'+names[:2]+'/'+names[-3:]+'/'+names[:-4]+'/'+Pos+'_'+names[3:]+'_'+h
+		path   = u'/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/8_expo_2017/COMPOSITES_SST_ESTACIONAL/'+names[:2]+'/'+names[-3:]+'/'+names[:-4]+'/'+Pos+'_'+names[3:]+'_'+h
 		plotear(lat[-1], lat[0], lon[0], lon[-1], 15, 15, lon, lat, Anom_sst, min_W, max_W, u'°C', titulo, path, C_T='k', wind=False, mapa_u=None, mapa_v=None)

@@ -2,14 +2,14 @@ library(HiddenMarkov)
 library(fitdistrplus)
 
 
-###############################   Nov_Mar   ################################
+###############################   Ene_Dic   ################################
 
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/datos_TT_NovMar.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/24_expo_2018/datos_PP_EneDic_Anomalies_925.csv"
                  , header=FALSE, sep=",")
 
 spd = c(data$V1)
 "Necesitamos que esté entre [0, 1) porque se va a utilizar la distribución beta"
-spd = spd/max(spd) * 0.9999999
+spd = spd/max(spd) * 0.9999999 # Se multiplica por 0.9999999 porque la serie no puede tomar el valor de 1, porque luego no es posible calcular la bondad de ajuste
 
 fl <- fitdist(spd, "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
 
@@ -39,7 +39,7 @@ x <- dthmm(NULL, Pi, delta, "beta", pm , discrete = FALSE)
 x$x <- spd
 x$nonstat <- TRUE
 
-y <- BaumWelch(x, bwcontrol(maxiter=1000, posdiff=FALSE))
+y <- BaumWelch(x, bwcontrol(maxiter=10000, posdiff=FALSE))
 x <- dthmm(NULL, y[["Pi"]], y[["delta"]], "beta", y[["pm"]] , discrete = FALSE)
 x$x <- spd
 x$nonstat <- TRUE
@@ -65,5 +65,5 @@ states4 <- Viterbi(x)
 
 DF <- data.frame("states2" = states2, "states3" = states3, "states4" = states4)
 write.csv(DF, 
-          file = "/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/States_TT_NovMar.csv")
+          file = "/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/24_expo_2018/States_PP_anom_925.csv")
 

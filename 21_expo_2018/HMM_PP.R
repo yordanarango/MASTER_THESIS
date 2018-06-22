@@ -2,7 +2,7 @@ library(HiddenMarkov)
 library(fitdistrplus)
 
 
-###############################   Dic_Ene   ################################
+###############################   Nov_Mar   ################################
 
 data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/21_expo_2018/datos_PP_NovMar.csv"
                  , header=FALSE, sep=",")

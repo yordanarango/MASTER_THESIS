@@ -15,7 +15,7 @@ import csv
 from pandas import Timestamp
 
 "Leyendo datos"
-archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TRABAJO_DE_GRADO/DATOS_Y_CODIGOS/DATOS/UyV_1979_2016_res025.nc')
+archivo = nc.Dataset('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/DATOS/ERA-INTERIM/WIND/wind_big_area_925hPa.nc')
 
 "Fechas"
 time    = archivo['time'][:]
@@ -24,12 +24,12 @@ fechas  = [cdftime.num2date(x) for x in time]
 DATES   = pd.DatetimeIndex(fechas)[:] # Se toma una sóla hora del día de la velocidad, la cual corresponde a las 18:00 horas
 
 "Fecha hasta donde se va a hacer HMM"
-pos_2015_12_31 = np.where(DATES == Timestamp('2015-12-31 18:00:00'))[0][0]
-DATES          = DATES[3 : pos_2015_12_31+1 : 4]
-TIME           =  time[3 : pos_2015_12_31+1 : 4]
+pos_2017_12_31 = np.where(DATES == Timestamp('2017-12-31 18:00:00'))[0][0]
+DATES          = DATES[3 : pos_2017_12_31+1 : 4]
+TIME           =  time[3 : pos_2017_12_31+1 : 4]
 
 "Lectura de Estados"
-rf     = open("/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/States_PN.csv", 'r')
+rf     = open("/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/24_expo_2018/States_PN_anom_925.csv", 'r')
 reader = csv.reader(rf)
 states = [row for row in reader][1:]
 rf.close()
@@ -66,19 +66,21 @@ if Nc == 4:
 if Nc == 5:
     state_matrix = np.reshape(states5_new, (len(states5_new)/366, 366))
 
-if Nc == 3:
-    state_matrix[state_matrix == 2] = 33
-    state_matrix[state_matrix == 3] = 22
+elif Nc == 3:
+    state_matrix[state_matrix == 1] = 22
+    state_matrix[state_matrix == 2] = 11
 
-    state_matrix[state_matrix == 33] = 3
+    state_matrix[state_matrix == 11] = 1
     state_matrix[state_matrix == 22] = 2
 
 elif Nc == 4:
-    state_matrix[state_matrix == 3] = 22
-    state_matrix[state_matrix == 2] = 33
+    state_matrix[state_matrix == 2] = 11
+    state_matrix[state_matrix == 1] = 44
+    state_matrix[state_matrix == 4] = 22
 
-    state_matrix[state_matrix == 33] = 3
+    state_matrix[state_matrix == 11] = 1
     state_matrix[state_matrix == 22] = 2
+    state_matrix[state_matrix == 44] = 4
 
 "Ploteando con pcolor matriz de Viterbi de Estados"
 # Dos estados
@@ -130,7 +132,7 @@ x_ticks = np.arange(0, state_matrix.shape[1]+1)
 y_ticks = np.arange(0, state_matrix.shape[0]+1)
 
 my_y_ticks = ['1979', '1980', '', '', '', '1984', '', '', '', '1988', '', '', '', '1992', '', '', '', '1996', '', '', '', '2000', '', '', '', '2004',
-              '', '', '', '2008', '', '', '', '2012', '', '', '']
+              '', '', '', '2008', '', '', '', '2012', '', '', '', '2016', '']
 
 my_x_ticks = ['Jan-01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
 		      'Feb-01', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '',
@@ -149,6 +151,6 @@ plt.xticks(x_ticks, my_x_ticks, size=14)
 plt.ylabel('Year', size=17)
 plt.yticks(y_ticks, my_y_ticks, size=14)
 plt.xlabel('Day', size=17)
-ax.set_title(str(Nc)+' States - PN Wind', fontsize=18)
+ax.set_title(str(Nc)+' States - PN Wind Anomalies', fontsize=18)
 
-plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/17_expo_2018/Vit_matrix_PN_EneDic_'+str(Nc)+'st.png', bbox_inches='tight', dpi=300)
+plt.savefig('/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/24_expo_2018/Vit_matrix_PN_EneDic_'+str(Nc)+'st_anom_925.png', bbox_inches='tight', dpi=300)
