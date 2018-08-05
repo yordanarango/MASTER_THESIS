@@ -34,7 +34,7 @@ DATES   = pd.DatetimeIndex(fechas) # Se toma una sóla hora del día de la veloc
 "Fecha hasta donde se va a hacer HMM"
 pos_2017_04_30 = np.where(DATES == Timestamp('2017-04-30 18:00:00'))[0][0]
 DATES          = DATES[3 : pos_2017_04_30+1 : 4]
-TIME           =  time[3 : pos_2017_04_30+1 : 4]
+TIME           = time[3 : pos_2017_04_30+1 : 4]
 
 
 "coordenadas"

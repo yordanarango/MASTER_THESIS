@@ -4,7 +4,7 @@ library(fitdistrplus)
 
 ###############################   Nov_Abr   ################################
 
-data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/25_expo_2018/datos_PP_NovAbr_anom_925.csv"
+data <- read.csv(file="/home/yordan/YORDAN/UNAL/TESIS_MAESTRIA/25_expo_2018/datos_PN_NovAbr_anom_925.csv"
                  , header=FALSE, sep=",")
 
 spd = c(data$V1)

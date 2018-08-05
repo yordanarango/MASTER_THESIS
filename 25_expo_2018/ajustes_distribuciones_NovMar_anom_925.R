@@ -11,10 +11,10 @@ spd  <- c(data$V1)
 spd  <- spd/max(spd) * 0.9999999
 
 "Ajustes"
-dgm <- fitdist(spd, "gamma")          # gamma
-dln <- fitdist(spd, "lnorm")          # lognormal
-dlg <- fitdist(spd, "logis")          # logistica
-dwb <- fitdist(spd, "weibull")        # weibull
+dgm <- fitdist(spd, "gamma")               # gamma
+dln <- fitdist(spd, "lnorm")               # lognormal
+dlg <- fitdist(spd, "logis")               # logistica
+dwb <- fitdist(spd, "weibull")             # weibull
 dbt <- fitdist(spd, "beta", method="mge")  # beta: los valores deben ser dados entre 0 y 1
 
 #"Godness of fit - Beta"

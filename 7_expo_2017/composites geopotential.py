@@ -13,7 +13,6 @@ from netcdftime import utime
 import matplotlib.pyplot as plt
 import pandas as pd
 import pickle
-import xlrd
 import matplotlib.colors as colors
 import datetime as dt
 from dateutil.relativedelta import relativedelta

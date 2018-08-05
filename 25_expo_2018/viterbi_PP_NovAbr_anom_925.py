@@ -120,10 +120,8 @@ if Nc == 5:
 if Nc == 6:
     state_matrix[state_matrix == 2] = 44
     state_matrix[state_matrix == 4] = 22
-    #state_matrix[state_matrix == 4] = 33
 
     state_matrix[state_matrix == 22] = 2
-    #state_matrix[state_matrix == 33] = 3
     state_matrix[state_matrix == 44] = 4
 
 
